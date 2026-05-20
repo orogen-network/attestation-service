@@ -24,6 +24,7 @@ class AttestationConfig:
     required_vendors: tuple[str, ...] = ("nvidia",)
     validity_window_ms: int = 7 * 86400 * 1000
     max_reports: int = 10_000
+    allow_mock_quotes_in_production: bool = False
 
     def __post_init__(self) -> None:
         object.__setattr__(

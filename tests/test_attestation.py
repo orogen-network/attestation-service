@@ -81,6 +81,14 @@ def test_attest_requires_auth(config: AttestationConfig) -> None:
         assert r.status_code == 401
 
 
+def test_production_refuses_mock_quote_providers(
+    monkeypatch: pytest.MonkeyPatch, config: AttestationConfig,
+) -> None:
+    monkeypatch.setenv("OROGEN_ENV", "production")
+    with pytest.raises(RuntimeError, match="mock attestation quote providers"):
+        build_app(config)
+
+
 def test_attest_unregistered_operator_passes_in_dev(config: AttestationConfig) -> None:
     """When no operator is registered and we're not in production, dev fall-through."""
     app = build_app(config)

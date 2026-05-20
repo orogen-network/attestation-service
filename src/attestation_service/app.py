@@ -62,6 +62,15 @@ class ChallengeRequest(BaseModel):
 
 def build_app(config: AttestationConfig) -> FastAPI:
     require_internal_token()
+    if (
+        os.environ.get("OROGEN_ENV", "").lower() == "production"
+        and not config.allow_mock_quotes_in_production
+        and os.environ.get("ATTESTATION_ALLOW_MOCK_QUOTES", "").lower()
+        not in {"1", "true", "yes"}
+    ):
+        raise RuntimeError(
+            "mock attestation quote providers are not allowed in production"
+        )
 
     app = FastAPI(title="attestation-service", version="0.1.0")
     allowed_hosts = [
